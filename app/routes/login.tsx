@@ -77,7 +77,7 @@ export default function Login() {
   const actionData = useActionData();
 
   const firstLoad = useRef(true);
-  console.log(firstLoad);
+  // console.log(firstLoad);
 
   const [errors, setErrors] = useState(actionData?.errors || {});
   const [formError, setFormError] = useState(actionData?.error || "");
