@@ -1,14 +1,18 @@
 import { Layout } from "~/components/layout";
 import { FormField } from "~/components/form-field";
 import { useState } from "react";
-import { json } from "@remix-run/node";
-import type { ActionFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import {
   validateEmail,
   validateName,
   validatePassword,
 } from "~/utils/validators.server";
-import { login, register } from "~/utils/auth.server";
+import { getUser, login, register } from "~/utils/auth.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return (await getUser(request)) ? redirect("/") : null;
+};
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
