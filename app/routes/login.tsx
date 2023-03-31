@@ -1,6 +1,6 @@
 import { Layout } from "~/components/layout";
 import { FormField } from "~/components/form-field";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import {
@@ -9,6 +9,7 @@ import {
   validatePassword,
 } from "~/utils/validators.server";
 import { getUser, login, register } from "~/utils/auth.server";
+import { useActionData } from "@remix-run/react";
 
 export const loader: LoaderFunction = async ({ request }) => {
   return (await getUser(request)) ? redirect("/") : null;
@@ -73,13 +74,45 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Login() {
+  const actionData = useActionData();
+
+  const firstLoad = useRef(true);
+  console.log(firstLoad);
+
+  const [errors, setErrors] = useState(actionData?.errors || {});
+  const [formError, setFormError] = useState(actionData?.error || "");
+
   const [action, setAction] = useState("login");
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
+    email: actionData?.fields?.email || "",
+    password: actionData?.fields?.password || "",
+    firstName: actionData?.fields?.lastName || "",
+    lastName: actionData?.fields?.firstName || "",
   });
+
+  useEffect(() => {
+    if (!firstLoad.current) {
+      const newState = {
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+      };
+      setErrors(newState);
+      setFormError("");
+      setFormData(newState);
+    }
+  }, [action]);
+
+  useEffect(() => {
+    if (!firstLoad.current) {
+      setFormError("");
+    }
+  }, [formData]);
+
+  // useEffect(() => {
+  //   firstLoad.current = false;
+  // }, []);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -107,11 +140,15 @@ export default function Login() {
         </p>
 
         <form method="post" className="rounded-2xl bg-gray-200 p-6 w-96">
+          <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">
+            {formError}
+          </div>
           <FormField
             htmlFor="email"
             label="Email"
             value={formData.email}
             onChange={(e) => handleInputChange(e, "email")}
+            error={errors?.email}
           />
 
           <FormField
@@ -120,6 +157,7 @@ export default function Login() {
             label="Password"
             value={formData.password}
             onChange={(e) => handleInputChange(e, "password")}
+            error={errors?.password}
           />
 
           {action === "register" && (
@@ -129,12 +167,14 @@ export default function Login() {
                 label="First Name"
                 onChange={(e) => handleInputChange(e, "firstName")}
                 value={formData.firstName}
+                error={errors?.firstName}
               />
               <FormField
                 htmlFor="lastName"
                 label="Last Name"
                 onChange={(e) => handleInputChange(e, "lastName")}
                 value={formData.lastName}
+                error={errors?.lastName}
               />
             </>
           )}
