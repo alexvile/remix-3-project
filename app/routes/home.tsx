@@ -7,8 +7,9 @@ import { requireUserId } from "~/utils/auth.server";
 import { getOtherUsers } from "~/utils/user.server";
 import { Kudo } from "~/components/kudo";
 import type { Kudo as IKudo, Profile, Prisma } from "@prisma/client";
-import { getFilteredKudos } from "~/utils/kudos.server";
+import { getFilteredKudos, getRecentKudos } from "~/utils/kudos.server";
 import { SearchBar } from "~/components/search-bar";
+import { RecentBar } from "~/components/recent-bar";
 interface KudoWithProfile extends IKudo {
   author: {
     profile: Profile;
@@ -62,11 +63,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   const kudos = await getFilteredKudos(userId, sortOptions, textFilter);
-  return json({ users, kudos });
+  const recentKudos = await getRecentKudos();
+  return json({ users, kudos, recentKudos });
 };
 
 export default function Home() {
-  const { users, kudos } = useLoaderData();
+  const { users, kudos, recentKudos } = useLoaderData();
   return (
     <Layout>
       <Outlet />
@@ -80,7 +82,7 @@ export default function Home() {
                 <Kudo key={kudo.id} kudo={kudo} profile={kudo.author.profile} />
               ))}
             </div>
-            {/* Recent Kudos Goes Here */}
+            <RecentBar kudos={recentKudos} />
           </div>
         </div>
       </div>

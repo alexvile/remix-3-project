@@ -50,3 +50,26 @@ export const getFilteredKudos = async (
     },
   });
 };
+
+export const getRecentKudos = async () => {
+  return await prisma.kudo.findMany({
+    take: 3,
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      style: {
+        select: {
+          emoji: true,
+        },
+      },
+      recipient: {
+        select: {
+          id: true,
+          profile: true,
+        },
+      },
+    },
+  });
+};
