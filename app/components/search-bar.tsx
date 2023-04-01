@@ -1,8 +1,10 @@
 import { useNavigate, useSearchParams } from "@remix-run/react";
 import { SelectBox } from "./select-box";
 import { sortOptions } from "~/utils/constants";
+import { useState } from "react";
 
 export function SearchBar() {
+  const [dropDown, setDropDown] = useState();
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
 
@@ -35,6 +37,10 @@ export function SearchBar() {
         containerClassName="w-40"
         name="sort"
         options={sortOptions}
+        onChange={(e) => {
+          setDropDown(e.currentTarget.value);
+        }}
+        value={dropDown}
       />
       <button
         type="submit"
