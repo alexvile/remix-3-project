@@ -10,10 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-type Profile {
-  firstName String
-  lastName  String
-}
+
 
 enum Emoji {
   THUMBSUP
@@ -35,7 +32,11 @@ enum Color {
   BLUE
   WHITE
 }
-
+type Profile {
+  firstName String
+  lastName  String
+  department Department @default(HR)
+}
 type KudoStyle {
   backgroundColor Color @default(YELLOW)
   textColor       Color @default(WHITE)
@@ -51,6 +52,7 @@ model User {
   profile       Profile
   authoredKudos Kudo[]   @relation("AuthoredKudos")
   kudos         Kudo[]   @relation("RecievedKudos")
+  
 }
 
 model Kudo {
