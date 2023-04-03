@@ -8,6 +8,7 @@ import { departments } from "~/utils/constants";
 import { SelectBox } from "~/components/select-box";
 import { validateName } from "~/utils/validators.server";
 import { updateUser } from "~/utils/user.server";
+import { Department } from "@prisma/client";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
@@ -99,6 +100,10 @@ export default function ProfileSettings() {
               </div>
             </form>
           </div>
+          <div className="w-1/3">
+                  <div />
+               </div>
+
         </div>
       </div>
     </Modal>

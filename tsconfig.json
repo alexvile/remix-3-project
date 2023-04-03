@@ -1,5 +1,5 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "app/utils/imgloader.server.ts", "app/routes/cloudinary.jsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "isolatedModules": true,

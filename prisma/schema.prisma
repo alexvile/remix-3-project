@@ -36,6 +36,7 @@ type Profile {
   firstName String
   lastName  String
   department Department @default(HR)
+  profilePicture String?
 }
 type KudoStyle {
   backgroundColor Color @default(YELLOW)
